@@ -2,12 +2,34 @@ import "./index.css";
 import { Composition } from "remotion";
 import { HelloWorld, myCompSchema } from "./HelloWorld";
 import { Logo, myCompSchema2 } from "./HelloWorld/Logo";
+import { ProductionSearch } from "./compositions/ProductionSearch";
+import { ProductionSearchIntro } from "./compositions/ProductionSearchIntro";
+import { DURATION_IN_FRAMES, FPS } from "./data/searchData";
+import { INTRO_DURATION_IN_FRAMES, INTRO_FPS } from "./data/searchIntroData";
 
 // Each <Composition> is an entry in the sidebar!
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="ProductionSearchIntro"
+        component={ProductionSearchIntro}
+        durationInFrames={INTRO_DURATION_IN_FRAMES}
+        fps={INTRO_FPS}
+        width={1080}
+        height={1920}
+      />
+
+      <Composition
+        id="ProductionSearch"
+        component={ProductionSearch}
+        durationInFrames={DURATION_IN_FRAMES}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+
       <Composition
         // You can take the "id" to render a video:
         // npx remotion render HelloWorld
