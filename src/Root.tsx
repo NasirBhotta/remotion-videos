@@ -3,15 +3,37 @@ import { Composition } from "remotion";
 import { HelloWorld, myCompSchema } from "./HelloWorld";
 import { Logo, myCompSchema2 } from "./HelloWorld/Logo";
 import { ProductionSearch } from "./compositions/ProductionSearch";
+import { ProductionSearchDebouncing } from "./compositions/ProductionSearchDebouncing";
 import { ProductionSearchIntro } from "./compositions/ProductionSearchIntro";
+import { ProductionSearchNormalization } from "./compositions/ProductionSearchNormalization";
 import { DURATION_IN_FRAMES, FPS } from "./data/searchData";
+import { DEBOUNCE_DURATION_IN_FRAMES, DEBOUNCE_FPS } from "./data/searchDebounceData";
 import { INTRO_DURATION_IN_FRAMES, INTRO_FPS } from "./data/searchIntroData";
+import { NORMALIZATION_DURATION_IN_FRAMES, NORMALIZATION_FPS } from "./data/searchNormalizationData";
 
 // Each <Composition> is an entry in the sidebar!
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="ProductionSearchDebouncing"
+        component={ProductionSearchDebouncing}
+        durationInFrames={DEBOUNCE_DURATION_IN_FRAMES}
+        fps={DEBOUNCE_FPS}
+        width={1080}
+        height={1920}
+      />
+
+      <Composition
+        id="ProductionSearchNormalization"
+        component={ProductionSearchNormalization}
+        durationInFrames={NORMALIZATION_DURATION_IN_FRAMES}
+        fps={NORMALIZATION_FPS}
+        width={1080}
+        height={1920}
+      />
+
       <Composition
         id="ProductionSearchIntro"
         component={ProductionSearchIntro}
