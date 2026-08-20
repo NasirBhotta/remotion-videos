@@ -1,90 +1,112 @@
 import "./index.css";
 import { Composition } from "remotion";
-import { HelloWorld, myCompSchema } from "./HelloWorld";
-import { Logo, myCompSchema2 } from "./HelloWorld/Logo";
-import { ProductionSearch } from "./compositions/ProductionSearch";
-import { ProductionSearchDebouncing } from "./compositions/ProductionSearchDebouncing";
-import { ProductionSearchIntro } from "./compositions/ProductionSearchIntro";
-import { ProductionSearchNormalization } from "./compositions/ProductionSearchNormalization";
-import { DURATION_IN_FRAMES, FPS } from "./data/searchData";
-import { DEBOUNCE_DURATION_IN_FRAMES, DEBOUNCE_FPS } from "./data/searchDebounceData";
-import { INTRO_DURATION_IN_FRAMES, INTRO_FPS } from "./data/searchIntroData";
-import { NORMALIZATION_DURATION_IN_FRAMES, NORMALIZATION_FPS } from "./data/searchNormalizationData";
+import { NizaamPromoVideo } from "./compositions/NizaamPromoVideo";
+import { Scene1_ProblemHook } from "./scenes/Scene1_ProblemHook";
+import { Scene2_LogoReveal } from "./scenes/Scene2_LogoReveal";
+import { Scene3A_POSBilling } from "./scenes/Scene3A_POSBilling";
+import { Scene3B_Inventory } from "./scenes/Scene3B_Inventory";
+import { Scene3C_UdhaarKhata } from "./scenes/Scene3C_UdhaarKhata";
+import { Scene3D_RepairLab } from "./scenes/Scene3D_RepairLab";
+import { Scene3E_ProfitReports } from "./scenes/Scene3E_ProfitReports";
+import { Scene4_Ecosystem } from "./scenes/Scene4_Ecosystem";
+import { Scene5_Outro } from "./scenes/Scene5_Outro";
+import { TIMELINE, TOTAL_DURATION_IN_FRAMES, VIDEO_FPS, VIDEO_HEIGHT, VIDEO_WIDTH } from "./config/timeline";
 
-// Each <Composition> is an entry in the sidebar!
+// Each <Composition> is an entry in the Remotion sidebar
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* Primary Master Video (58s Vertical Promo) */}
       <Composition
-        id="ProductionSearchDebouncing"
-        component={ProductionSearchDebouncing}
-        durationInFrames={DEBOUNCE_DURATION_IN_FRAMES}
-        fps={DEBOUNCE_FPS}
-        width={1080}
-        height={1920}
+        id="NizaamPromoVideo"
+        component={NizaamPromoVideo}
+        durationInFrames={TOTAL_DURATION_IN_FRAMES}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+
+      {/* Individual Scene Compositions for Focused Previewing */}
+      <Composition
+        id="Scene1-ProblemHook"
+        component={Scene1_ProblemHook}
+        durationInFrames={TIMELINE.SCENE_1_PROBLEM.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
       />
 
       <Composition
-        id="ProductionSearchNormalization"
-        component={ProductionSearchNormalization}
-        durationInFrames={NORMALIZATION_DURATION_IN_FRAMES}
-        fps={NORMALIZATION_FPS}
-        width={1080}
-        height={1920}
+        id="Scene2-LogoReveal"
+        component={Scene2_LogoReveal}
+        durationInFrames={TIMELINE.SCENE_2_LOGO_REVEAL.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
       />
 
       <Composition
-        id="ProductionSearchIntro"
-        component={ProductionSearchIntro}
-        durationInFrames={INTRO_DURATION_IN_FRAMES}
-        fps={INTRO_FPS}
-        width={1080}
-        height={1920}
+        id="Scene3A-POSBilling"
+        component={Scene3A_POSBilling}
+        durationInFrames={TIMELINE.SCENE_3A_POS.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
       />
 
       <Composition
-        id="ProductionSearch"
-        component={ProductionSearch}
-        durationInFrames={DURATION_IN_FRAMES}
-        fps={FPS}
-        width={1080}
-        height={1920}
+        id="Scene3B-Inventory"
+        component={Scene3B_Inventory}
+        durationInFrames={TIMELINE.SCENE_3B_INVENTORY.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
       />
 
       <Composition
-        // You can take the "id" to render a video:
-        // npx remotion render HelloWorld
-        id="HelloWorld"
-        component={HelloWorld}
-        durationInFrames={150}
-        fps={30}
-        width={1920}
-        height={1080}
-        // You can override these props for each render:
-        // https://www.remotion.dev/docs/parametrized-rendering
-        schema={myCompSchema}
-        defaultProps={{
-          titleText: "Welcome to Remotion",
-          titleColor: "#000000",
-          logoColor1: "#91EAE4",
-          logoColor2: "#86A8E7",
-        }}
+        id="Scene3C-UdhaarKhata"
+        component={Scene3C_UdhaarKhata}
+        durationInFrames={TIMELINE.SCENE_3C_UDHAAR.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
       />
 
-      {/* Mount any React component to make it show up in the sidebar and work on it individually! */}
       <Composition
-        id="OnlyLogo"
-        component={Logo}
-        durationInFrames={150}
-        fps={30}
-        width={1920}
-        height={1080}
-        schema={myCompSchema2}
-        defaultProps={{
-          logoColor1: "#91dAE2" as const,
-          logoColor2: "#86A8E7" as const,
-        }}
+        id="Scene3D-RepairLab"
+        component={Scene3D_RepairLab}
+        durationInFrames={TIMELINE.SCENE_3D_REPAIR.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+
+      <Composition
+        id="Scene3E-ProfitReports"
+        component={Scene3E_ProfitReports}
+        durationInFrames={TIMELINE.SCENE_3E_PROFIT.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+
+      <Composition
+        id="Scene4-Ecosystem"
+        component={Scene4_Ecosystem}
+        durationInFrames={TIMELINE.SCENE_4_ECOSYSTEM.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+
+      <Composition
+        id="Scene5-Outro"
+        component={Scene5_Outro}
+        durationInFrames={TIMELINE.SCENE_5_OUTRO.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
       />
     </>
   );

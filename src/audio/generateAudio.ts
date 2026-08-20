@@ -247,9 +247,9 @@ function generateUiClick(): Float32Array[] {
   return [lowpassFilter(left, 2400), lowpassFilter(right, 2400)];
 }
 
-// 9. Background Music (Unchanged - user confirmed it is good)
+// 9. Background Music (Extended to 35s continuous track for full video length)
 function generateBackgroundMusic(): Float32Array[] {
-  const duration = 9.5;
+  const duration = 35.0;
   const numFrames = Math.floor(SAMPLE_RATE * duration);
   const left = new Float32Array(numFrames);
   const right = new Float32Array(numFrames);
@@ -268,7 +268,7 @@ function generateBackgroundMusic(): Float32Array[] {
 
   for (let i = 0; i < numFrames; i++) {
     const t = i / SAMPLE_RATE;
-    const chordIndex = Math.min(Math.floor(t / 2.0), chords.length - 1);
+    const chordIndex = Math.floor(t / 2.0) % chords.length;
     const chord = chords[chordIndex];
     const beatInBar = (t % 2.0) / beatSec;
 
@@ -305,8 +305,8 @@ function generateBackgroundMusic(): Float32Array[] {
     let masterEnv = 1;
     if (t < 0.2) {
       masterEnv = t / 0.2;
-    } else if (t > 8.8) {
-      masterEnv = Math.max(0, (9.5 - t) / 0.7);
+    } else if (t > 33.0) {
+      masterEnv = Math.max(0, (35.0 - t) / 2.0);
     }
 
     const mixedLeft = (arpSound * (1 - arpPan) + bassSound * 0.5 + padSound * 0.5 + kick * 0.5 + shaker * 0.4) * masterEnv;
