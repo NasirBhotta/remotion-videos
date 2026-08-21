@@ -13,6 +13,11 @@ import { Scene3G_ReceiptsReturns } from "./scenes/Scene3G_ReceiptsReturns";
 import { Scene4_Ecosystem } from "./scenes/Scene4_Ecosystem";
 import { Scene5_Outro } from "./scenes/Scene5_Outro";
 import { TIMELINE, TOTAL_DURATION_IN_FRAMES, VIDEO_FPS, VIDEO_HEIGHT, VIDEO_WIDTH } from "./config/timeline";
+import { ProductionSearchRequestControl } from "./compositions/ProductionSearchRequestControl";
+import { ProductionSearchDebouncing } from "./compositions/ProductionSearchDebouncing";
+import { ProductionSearchNormalization } from "./compositions/ProductionSearchNormalization";
+import { ProductionSearchIntro } from "./compositions/ProductionSearchIntro";
+import { REQUEST_CONTROL_DURATION_IN_FRAMES, REQUEST_CONTROL_FPS } from "./data/searchRequestControlData";
 
 // Each <Composition> is an entry in the Remotion sidebar
 
@@ -125,6 +130,40 @@ export const RemotionRoot: React.FC = () => {
         component={Scene5_Outro}
         durationInFrames={TIMELINE.SCENE_5_OUTRO.duration}
         fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+
+      {/* Production Search Series Compositions */}
+      <Composition
+        id="ProductionSearchRequestControl"
+        component={ProductionSearchRequestControl}
+        durationInFrames={REQUEST_CONTROL_DURATION_IN_FRAMES}
+        fps={REQUEST_CONTROL_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+      <Composition
+        id="ProductionSearchDebouncing"
+        component={ProductionSearchDebouncing}
+        durationInFrames={330}
+        fps={30}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+      <Composition
+        id="ProductionSearchNormalization"
+        component={ProductionSearchNormalization}
+        durationInFrames={270}
+        fps={30}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+      <Composition
+        id="ProductionSearchIntro"
+        component={ProductionSearchIntro}
+        durationInFrames={270}
+        fps={30}
         width={VIDEO_WIDTH}
         height={VIDEO_HEIGHT}
       />

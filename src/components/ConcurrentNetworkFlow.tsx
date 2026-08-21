@@ -11,31 +11,23 @@ export const ConcurrentNetworkFlow: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  if (frame >= RC_SCENES.race) {
+  if (frame >= RC_SCENES.raceWhy) {
     return null;
   }
 
-  const isTravelScene = frame >= RC_SCENES.travel;
-
-  const sceneFade = interpolate(
+  const fadeOut = interpolate(
     frame,
-    [RC_SCENES.race - 8, RC_SCENES.race],
+    [RC_SCENES.raceWhy - 10, RC_SCENES.raceWhy],
     [1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
-
-  const serverEnter = spring({
-    frame: frame - 12,
-    fps,
-    config: { damping: 15, stiffness: 120 },
-  });
 
   return (
     <div
       style={{
         position: "absolute",
         inset: 0,
-        opacity: sceneFade,
+        opacity: fadeOut,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -45,53 +37,53 @@ export const ConcurrentNetworkFlow: React.FC = () => {
       <div
         style={{
           position: "absolute",
-          top: 180,
+          top: 160,
           width: "100%",
           textAlign: "center",
+          padding: "0 30px",
         }}
       >
         <div
           style={{
-            color: isTravelScene ? RC_COLORS.amber : RC_COLORS.cyan,
-            fontSize: 22,
+            color: RC_COLORS.cyan,
+            fontSize: 20,
             fontWeight: 800,
-            letterSpacing: 5,
+            letterSpacing: 4,
             marginBottom: 10,
           }}
         >
-          {isTravelScene ? "NETWORK LATENCY VARIES" : "RAPID QUERY CHANGES"}
+          PART 04 / REQUEST CONTROL
         </div>
         <div
           style={{
             color: RC_COLORS.text,
-            fontSize: 54,
+            fontSize: 52,
             fontWeight: 900,
             letterSpacing: -1.5,
+            lineHeight: 1.15,
           }}
         >
-          {isTravelScene
-            ? "3 ASYNC REQUESTS IN-FLIGHT"
-            : "MULTIPLE ACTIVE REQUESTS"}
+          Rapid Typing Dispatches Concurrent Requests
         </div>
       </div>
 
-      {/* 2. Search Input */}
-      <div style={{ position: "absolute", top: 320 }}>
+      {/* 2. Top Search Bar */}
+      <div style={{ position: "absolute", top: 340 }}>
         <RequestControlSearchBar />
       </div>
 
-      {/* 3. Three Concurrent Request Cards / Lanes */}
+      {/* 3. The 2 Dispatched Requests (Spaced out & High Contrast) */}
       <div
         style={{
           position: "absolute",
           top: 480,
-          width: 820,
+          width: 840,
           display: "flex",
           flexDirection: "column",
           gap: 24,
         }}
       >
-        {SEARCH_REQUESTS.map((req, idx) => {
+        {SEARCH_REQUESTS.map((req) => {
           const cardEnter = spring({
             frame: frame - req.startFrame,
             fps,
@@ -102,15 +94,13 @@ export const ConcurrentNetworkFlow: React.FC = () => {
             return null;
           }
 
-          // In travel scene (105-195), animate travel progression
-          const travelProgress = isTravelScene
-            ? interpolate(
-                frame,
-                [RC_SCENES.travel + idx * 8, RC_SCENES.race - 10],
-                [0, 1],
-                { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
-              )
-            : 0;
+          // Packet progress from Client to Server
+          const packetProgress = interpolate(
+            frame,
+            [req.startFrame + 5, req.startFrame + 40],
+            [0, 100],
+            { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+          );
 
           return (
             <div
@@ -118,12 +108,12 @@ export const ConcurrentNetworkFlow: React.FC = () => {
               style={{
                 background: RC_COLORS.cardBg,
                 border: `2px solid ${req.color}`,
-                boxShadow: `0 0 35px ${req.glowColor}`,
-                borderRadius: 20,
-                padding: "20px 28px",
+                boxShadow: `0 10px 40px ${req.glowColor}`,
+                borderRadius: 22,
+                padding: "22px 28px",
                 display: "flex",
                 flexDirection: "column",
-                gap: 12,
+                gap: 16,
                 transform: `scale(${0.92 + cardEnter * 0.08})`,
                 opacity: cardEnter,
               }}
@@ -138,9 +128,9 @@ export const ConcurrentNetworkFlow: React.FC = () => {
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                   <div
                     style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: "50%",
+                      width: 38,
+                      height: 38,
+                      borderRadius: 12,
                       background: `${req.color}33`,
                       border: `2px solid ${req.color}`,
                       display: "flex",
@@ -151,12 +141,12 @@ export const ConcurrentNetworkFlow: React.FC = () => {
                       fontSize: 18,
                     }}
                   >
-                    {req.id}
+                    #{req.id}
                   </div>
                   <span
                     style={{
                       color: RC_COLORS.text,
-                      fontSize: 24,
+                      fontSize: 26,
                       fontFamily: "monospace",
                       fontWeight: 800,
                     }}
@@ -169,118 +159,98 @@ export const ConcurrentNetworkFlow: React.FC = () => {
                   style={{
                     background: req.isLatest
                       ? `${RC_COLORS.green}33`
-                      : `${RC_COLORS.panel}`,
+                      : `${RC_COLORS.cyan}22`,
                     border: `1px solid ${
-                      req.isLatest ? RC_COLORS.green : RC_COLORS.border
+                      req.isLatest ? RC_COLORS.green : RC_COLORS.cyan
                     }`,
-                    color: req.isLatest ? RC_COLORS.green : RC_COLORS.muted,
+                    color: req.isLatest ? RC_COLORS.green : RC_COLORS.cyan,
                     fontSize: 15,
                     fontWeight: 900,
-                    padding: "4px 12px",
-                    borderRadius: 8,
+                    padding: "6px 14px",
+                    borderRadius: 10,
                     letterSpacing: 1,
                   }}
                 >
-                  {req.isLatest ? "LATEST (TARGET)" : "STALE CANDIDATE"}
+                  {req.isLatest ? "LATEST (USER TARGET)" : "EARLIER KEYSTROKE"}
                 </div>
               </div>
 
-              {/* Latency / In-Flight Status Bar */}
+              {/* Progress Bar with Latency Annotation */}
               <div
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
                   background: "#080c14",
                   border: `1px solid ${RC_COLORS.border}`,
-                  borderRadius: 10,
-                  padding: "8px 16px",
-                  fontSize: 15,
+                  borderRadius: 14,
+                  padding: "12px 18px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
                 }}
               >
-                <span style={{ color: RC_COLORS.muted, fontWeight: 700 }}>
-                  Est. Latency:{" "}
-                  <strong style={{ color: req.color }}>{req.latencyMs}ms</strong>
-                </span>
-                <span style={{ color: req.color, fontWeight: 800 }}>
-                  {isTravelScene
-                    ? `IN FLIGHT (${Math.round(travelProgress * 100)}%)`
-                    : "DISPATCHED"}
-                </span>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 16,
+                    fontWeight: 700,
+                  }}
+                >
+                  <span style={{ color: RC_COLORS.muted }}>
+                    Network Latency:{" "}
+                    <strong style={{ color: req.color }}>
+                      {req.latencyMs}ms {req.latencyMs > 200 ? "(High Jitter 🐌)" : "(Fast Response ⚡)"}
+                    </strong>
+                  </span>
+                  <span style={{ color: req.color, fontWeight: 800 }}>
+                    DISPATCHED
+                  </span>
+                </div>
+
+                {/* Visual Flight Bar */}
+                <div
+                  style={{
+                    width: "100%",
+                    height: 8,
+                    background: "rgba(255, 255, 255, 0.08)",
+                    borderRadius: 6,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${packetProgress}%`,
+                      height: "100%",
+                      background: req.color,
+                      boxShadow: `0 0 12px ${req.color}`,
+                    }}
+                  />
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* 4. API Backend Server Node */}
+      {/* 4. Bottom Insight Callout */}
       <div
         style={{
           position: "absolute",
-          top: 1240,
-          width: 820,
-          background: RC_COLORS.serverNodeBg,
-          border: `2px solid ${RC_COLORS.cardBorder}`,
-          boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
-          borderRadius: 24,
-          padding: "26px 36px",
-          boxSizing: "border-box",
-          transform: `scale(${0.92 + serverEnter * 0.08})`,
-          opacity: serverEnter,
+          top: 960,
+          width: 840,
+          background: `${RC_COLORS.panelStrong}f0`,
+          border: `1.5px solid ${RC_COLORS.cardBorder}`,
+          borderRadius: 20,
+          padding: "20px 28px",
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
+          gap: 16,
+          boxSizing: "border-box",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div
-            style={{
-              width: 14,
-              height: 14,
-              borderRadius: "50%",
-              background: RC_COLORS.cyan,
-              boxShadow: `0 0 12px ${RC_COLORS.cyan}`,
-            }}
-          />
-          <div>
-            <div
-              style={{
-                color: RC_COLORS.text,
-                fontSize: 26,
-                fontWeight: 800,
-                letterSpacing: -0.5,
-              }}
-            >
-              API BACKEND SERVER
-            </div>
-            <div
-              style={{
-                color: RC_COLORS.muted,
-                fontSize: 16,
-                fontWeight: 700,
-                marginTop: 2,
-              }}
-            >
-              {isTravelScene
-                ? "Processing 3 parallel concurrent requests..."
-                : "Receiving async query stream..."}
-            </div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            background: `${RC_COLORS.cardBorder}`,
-            border: `1px solid ${RC_COLORS.border}`,
-            color: RC_COLORS.muted,
-            fontSize: 16,
-            fontWeight: 800,
-            padding: "8px 16px",
-            borderRadius: 10,
-            letterSpacing: 1,
-          }}
-        >
-          {isTravelScene ? "3 IN-FLIGHT" : "READY"}
+        <span style={{ fontSize: 32 }}>⏱️</span>
+        <div style={{ color: RC_COLORS.muted, fontSize: 19, lineHeight: 1.4, fontWeight: 600 }}>
+          <strong style={{ color: RC_COLORS.text }}>Network Jitter: </strong>
+          Request #1 is delayed on the network (350ms), while Request #2 will finish in only 100ms!
         </div>
       </div>
     </div>

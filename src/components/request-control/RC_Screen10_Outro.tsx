@@ -1,20 +1,12 @@
 import React from "react";
 import { spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { RC_COLORS, RC_SCENES } from "../data/searchRequestControlData";
+import { RC_COLORS } from "../../data/searchRequestControlData";
 
-export const RequestControlOutro: React.FC = () => {
+export const RC_Screen10_Outro: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  if (frame < RC_SCENES.outro - 4) {
-    return null;
-  }
-
-  const enter = spring({
-    frame: frame - RC_SCENES.outro,
-    fps,
-    config: { damping: 14, stiffness: 120 },
-  });
+  const enter = spring({ frame, fps, config: { damping: 14, stiffness: 120 } });
 
   return (
     <div
@@ -38,10 +30,10 @@ export const RequestControlOutro: React.FC = () => {
           fontSize: 24,
           letterSpacing: 6,
           fontWeight: 800,
-          marginBottom: 16,
+          marginBottom: 14,
         }}
       >
-        PART 04
+        PART 04 COMPLETE
       </div>
 
       {/* Main Title */}
@@ -52,7 +44,7 @@ export const RequestControlOutro: React.FC = () => {
           lineHeight: 1.05,
           fontWeight: 900,
           letterSpacing: -2,
-          marginBottom: 14,
+          marginBottom: 12,
         }}
       >
         REQUEST CONTROL
@@ -65,7 +57,7 @@ export const RequestControlOutro: React.FC = () => {
           fontSize: 32,
           fontWeight: 900,
           letterSpacing: 2,
-          marginBottom: 8,
+          marginBottom: 6,
         }}
       >
         LATEST REQUEST WINS
@@ -74,13 +66,13 @@ export const RequestControlOutro: React.FC = () => {
       <div
         style={{
           color: RC_COLORS.cyan,
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: 700,
           letterSpacing: 2,
-          marginBottom: 44,
+          marginBottom: 36,
         }}
       >
-        CANCEL & DISCARD STALE RESPONSES
+        CANCEL &amp; DISCARD STALE RESPONSES
       </div>
 
       {/* Series Roadmap */}
@@ -92,24 +84,14 @@ export const RequestControlOutro: React.FC = () => {
           padding: "16px 24px",
           display: "flex",
           gap: 14,
-          marginBottom: 40,
+          marginBottom: 36,
         }}
       >
-        <div style={{ color: RC_COLORS.muted, fontSize: 15, fontWeight: 700 }}>
-          P1: Intro ✓
-        </div>
-        <div style={{ color: RC_COLORS.muted, fontSize: 15, fontWeight: 700 }}>
-          P2: Normalization ✓
-        </div>
-        <div style={{ color: RC_COLORS.muted, fontSize: 15, fontWeight: 700 }}>
-          P3: Debouncing ✓
-        </div>
-        <div style={{ color: RC_COLORS.green, fontSize: 15, fontWeight: 800 }}>
-          P4: Request Control 🟢
-        </div>
-        <div style={{ color: RC_COLORS.amber, fontSize: 15, fontWeight: 800 }}>
-          P5: Next →
-        </div>
+        <div style={{ color: RC_COLORS.muted, fontSize: 15, fontWeight: 700 }}>P1: Intro ✓</div>
+        <div style={{ color: RC_COLORS.muted, fontSize: 15, fontWeight: 700 }}>P2: Normalization ✓</div>
+        <div style={{ color: RC_COLORS.muted, fontSize: 15, fontWeight: 700 }}>P3: Debouncing ✓</div>
+        <div style={{ color: RC_COLORS.green, fontSize: 15, fontWeight: 800 }}>P4: Request Control 🟢</div>
+        <div style={{ color: RC_COLORS.amber, fontSize: 15, fontWeight: 800 }}>P5: Next →</div>
       </div>
 
       {/* Next Episode Box */}
@@ -119,45 +101,24 @@ export const RequestControlOutro: React.FC = () => {
           border: `2px solid ${RC_COLORS.amber}`,
           boxShadow: `0 0 40px ${RC_COLORS.amberGlow}`,
           borderRadius: 22,
-          padding: "18px 44px",
+          padding: "18px 40px",
           display: "flex",
           alignItems: "center",
           gap: 14,
-          marginBottom: 36,
+          marginBottom: 32,
         }}
       >
-        <span
-          style={{
-            color: RC_COLORS.amber,
-            fontSize: 24,
-            fontWeight: 900,
-            letterSpacing: 2,
-          }}
-        >
+        <span style={{ color: RC_COLORS.amber, fontSize: 24, fontWeight: 900, letterSpacing: 2 }}>
           NEXT:
         </span>
-        <span
-          style={{
-            color: RC_COLORS.text,
-            fontSize: 24,
-            fontWeight: 800,
-            letterSpacing: 1,
-          }}
-        >
-          CACHING & INDEXING <span style={{ color: RC_COLORS.amber }}>→</span>
+        <span style={{ color: RC_COLORS.text, fontSize: 24, fontWeight: 800, letterSpacing: 1 }}>
+          CACHING &amp; INDEXING <span style={{ color: RC_COLORS.amber }}>→</span>
         </span>
       </div>
 
       {/* Follow CTA */}
-      <div
-        style={{
-          color: RC_COLORS.muted,
-          fontSize: 20,
-          letterSpacing: 4,
-          fontWeight: 800,
-        }}
-      >
-        FOLLOW FOR THE FULL ARCHITECTURE
+      <div style={{ color: RC_COLORS.muted, fontSize: 19, letterSpacing: 4, fontWeight: 800 }}>
+        FOLLOW FOR THE FULL SERIES
       </div>
     </div>
   );

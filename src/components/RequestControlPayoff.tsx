@@ -7,25 +7,25 @@ export const RequestControlPayoff: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  if (frame < RC_SCENES.payoff - 4 || frame >= RC_SCENES.outro + 4) {
+  if (frame < RC_SCENES.payoff - 6 || frame >= RC_SCENES.outro + 4) {
     return null;
   }
 
   const enter = spring({
     frame: frame - RC_SCENES.payoff,
     fps,
-    config: { damping: 15, stiffness: 120 },
+    config: { damping: 14, stiffness: 120 },
   });
 
   const fadeOut = interpolate(
     frame,
-    [RC_SCENES.outro - 6, RC_SCENES.outro + 2],
+    [RC_SCENES.outro - 8, RC_SCENES.outro + 2],
     [1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
   const resultsEnter = spring({
-    frame: frame - (RC_SCENES.payoff + 12),
+    frame: frame - (RC_SCENES.payoff + 8),
     fps,
     config: { damping: 14, stiffness: 140 },
   });
@@ -45,17 +45,18 @@ export const RequestControlPayoff: React.FC = () => {
       <div
         style={{
           position: "absolute",
-          top: 180,
+          top: 160,
           width: "100%",
           textAlign: "center",
+          padding: "0 30px",
         }}
       >
         <div
           style={{
             color: RC_COLORS.green,
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: 800,
-            letterSpacing: 5,
+            letterSpacing: 4,
             marginBottom: 10,
           }}
         >
@@ -64,84 +65,36 @@ export const RequestControlPayoff: React.FC = () => {
         <div
           style={{
             color: RC_COLORS.text,
-            fontSize: 56,
+            fontSize: 52,
             fontWeight: 900,
             letterSpacing: -1.5,
+            lineHeight: 1.15,
           }}
         >
-          LATEST REQUEST WINS
+          Latest Request Wins Every Time
         </div>
       </div>
 
-      {/* 2. Top Search Input */}
-      <div style={{ position: "absolute", top: 320 }}>
+      {/* 2. Top Search Bar */}
+      <div style={{ position: "absolute", top: 340 }}>
         <RequestControlSearchBar
           fixedQuery="iphone 15"
-          badge="✓ UI UPDATED"
+          badge="✓ UI IN SYNC"
           badgeColor={RC_COLORS.green}
         />
       </div>
 
-      {/* 3. Acceptance Pipeline Flow */}
+      {/* 3. Search Results for "iphone 15" */}
       <div
         style={{
           position: "absolute",
           top: 480,
-          width: 820,
-          background: RC_COLORS.cardBg,
-          border: `2px solid ${RC_COLORS.green}`,
-          boxShadow: `0 0 45px ${RC_COLORS.greenGlow}`,
-          borderRadius: 24,
-          padding: "24px 32px",
-          boxSizing: "border-box",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontSize: 28 }}>🚀</span>
-          <div>
-            <div style={{ color: RC_COLORS.muted, fontSize: 14, fontWeight: 800, letterSpacing: 1.5 }}>
-              REQ C [ID: #3]
-            </div>
-            <div style={{ color: RC_COLORS.text, fontSize: 22, fontWeight: 900, fontFamily: "monospace" }}>
-              RESPONSE C ACCEPTED
-            </div>
-          </div>
-        </div>
-
-        <div style={{ color: RC_COLORS.green, fontSize: 28, fontWeight: 900 }}>
-          →
-        </div>
-
-        <div
-          style={{
-            background: `${RC_COLORS.green}33`,
-            border: `1.5px solid ${RC_COLORS.green}`,
-            color: RC_COLORS.green,
-            fontSize: 18,
-            fontWeight: 900,
-            padding: "8px 20px",
-            borderRadius: 12,
-            letterSpacing: 1,
-          }}
-        >
-          ✓ UPDATE UI
-        </div>
-      </div>
-
-      {/* 4. Rendered Search Results Card for "iphone 15" */}
-      <div
-        style={{
-          position: "absolute",
-          top: 650,
-          width: 820,
+          width: 840,
           background: `${RC_COLORS.panelStrong}`,
-          border: `2px solid ${RC_COLORS.cardBorder}`,
-          boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
+          border: `2px solid ${RC_COLORS.green}`,
+          boxShadow: `0 15px 45px ${RC_COLORS.greenGlow}`,
           borderRadius: 24,
-          padding: "28px 32px",
+          padding: "26px 32px",
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
@@ -154,8 +107,18 @@ export const RequestControlPayoff: React.FC = () => {
           <div style={{ color: RC_COLORS.cyan, fontSize: 16, fontWeight: 800, letterSpacing: 2 }}>
             SEARCH RESULTS: &quot;iphone 15&quot;
           </div>
-          <div style={{ color: RC_COLORS.muted, fontSize: 14, fontWeight: 700 }}>
-            3 Verified Products
+          <div
+            style={{
+              background: `${RC_COLORS.green}22`,
+              border: `1px solid ${RC_COLORS.green}66`,
+              color: RC_COLORS.green,
+              fontSize: 14,
+              fontWeight: 800,
+              padding: "4px 12px",
+              borderRadius: 8,
+            }}
+          >
+            REQ #2 (VERIFIED)
           </div>
         </div>
 
@@ -195,7 +158,7 @@ export const RequestControlPayoff: React.FC = () => {
               >
                 {idx + 1}
               </div>
-              <span style={{ color: RC_COLORS.text, fontSize: 19, fontWeight: 700 }}>
+              <span style={{ color: RC_COLORS.text, fontSize: 20, fontWeight: 700 }}>
                 {item.title}
               </span>
             </div>
@@ -209,13 +172,13 @@ export const RequestControlPayoff: React.FC = () => {
         ))}
       </div>
 
-      {/* 5. Key Metric Card */}
+      {/* 4. Bottom Metrics Banner */}
       <div
         style={{
           position: "absolute",
-          top: 1090,
-          width: 820,
-          background: `${RC_COLORS.panelStrong}ee`,
+          top: 920,
+          width: 840,
+          background: `${RC_COLORS.cardBg}`,
           border: `2px solid ${RC_COLORS.amber}`,
           boxShadow: `0 0 45px ${RC_COLORS.amberGlow}`,
           borderRadius: 24,
@@ -227,10 +190,10 @@ export const RequestControlPayoff: React.FC = () => {
         }}
       >
         <div style={{ textAlign: "center" }}>
-          <div style={{ color: RC_COLORS.muted, fontSize: 15, fontWeight: 800, letterSpacing: 2 }}>
+          <div style={{ color: RC_COLORS.muted, fontSize: 14, fontWeight: 800, letterSpacing: 2 }}>
             STALE OVERWRITES
           </div>
-          <div style={{ color: RC_COLORS.green, fontSize: 42, fontWeight: 900 }}>
+          <div style={{ color: RC_COLORS.green, fontSize: 40, fontWeight: 900, marginTop: 4 }}>
             0 (BLOCKED)
           </div>
         </div>
@@ -238,10 +201,10 @@ export const RequestControlPayoff: React.FC = () => {
         <div style={{ width: 2, height: 60, background: RC_COLORS.border }} />
 
         <div style={{ textAlign: "center" }}>
-          <div style={{ color: RC_COLORS.muted, fontSize: 15, fontWeight: 800, letterSpacing: 2 }}>
-            UI ACCURACY
+          <div style={{ color: RC_COLORS.muted, fontSize: 14, fontWeight: 800, letterSpacing: 2 }}>
+            SEARCH CONSISTENCY
           </div>
-          <div style={{ color: RC_COLORS.green, fontSize: 42, fontWeight: 900 }}>
+          <div style={{ color: RC_COLORS.green, fontSize: 40, fontWeight: 900, marginTop: 4 }}>
             100%
           </div>
         </div>

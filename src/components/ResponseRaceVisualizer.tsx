@@ -7,33 +7,39 @@ export const ResponseRaceVisualizer: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  if (frame < RC_SCENES.race - 4 || frame >= RC_SCENES.intercept) {
+  if (frame < RC_SCENES.raceWhy - 6 || frame >= RC_SCENES.solution) {
     return null;
   }
 
   const enter = spring({
-    frame: frame - RC_SCENES.race,
+    frame: frame - RC_SCENES.raceWhy,
     fps,
-    config: { damping: 15, stiffness: 120 },
+    config: { damping: 14, stiffness: 120 },
   });
 
   const fadeOut = interpolate(
     frame,
-    [RC_SCENES.intercept - 8, RC_SCENES.intercept],
+    [RC_SCENES.solution - 10, RC_SCENES.solution],
     [1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
-  // Response C arrives early (~frame 225)
-  const isCArrived = frame >= 225;
-  const cPulse = spring({
-    frame: frame - 225,
+  // Timeline events:
+  // 1. Frame 115 (t=100ms equivalent): Req #2 resolves first
+  const isReq2Resolved = frame >= 115;
+  const req2Spring = spring({
+    frame: frame - 115,
     fps,
-    config: { damping: 12, stiffness: 160 },
+    config: { damping: 12, stiffness: 150 },
   });
 
-  // Response A finishes late (~frame 255)
-  const isAFlying = frame >= 255;
+  // 2. Frame 165 (t=350ms equivalent): Req #1 resolves late and overwrites!
+  const isReq1Overwritten = frame >= 165;
+  const req1Spring = spring({
+    frame: frame - 165,
+    fps,
+    config: { damping: 11, stiffness: 140 },
+  });
 
   return (
     <div
@@ -50,321 +56,203 @@ export const ResponseRaceVisualizer: React.FC = () => {
       <div
         style={{
           position: "absolute",
-          top: 180,
+          top: 150,
           width: "100%",
           textAlign: "center",
+          padding: "0 30px",
         }}
       >
         <div
           style={{
-            color: RC_COLORS.amber,
-            fontSize: 22,
+            color: isReq1Overwritten ? RC_COLORS.red : RC_COLORS.amber,
+            fontSize: 20,
             fontWeight: 800,
-            letterSpacing: 5,
-            marginBottom: 10,
+            letterSpacing: 4,
+            marginBottom: 8,
           }}
         >
-          THE RACE CONDITION
+          {isReq1Overwritten ? "⚠️ ASYNC RACE CONDITION" : "THE RACE CONDITION"}
         </div>
         <div
           style={{
             color: RC_COLORS.text,
-            fontSize: 54,
+            fontSize: 50,
             fontWeight: 900,
             letterSpacing: -1.5,
+            lineHeight: 1.15,
           }}
         >
-          RESPONSES ARRIVE OUT OF ORDER
+          Why Does Stale Data Overwrite The UI?
         </div>
       </div>
 
-      {/* 2. Top Search Input (User is already on "iphone 15") */}
-      <div style={{ position: "absolute", top: 320 }}>
+      {/* 2. Top Search Bar */}
+      <div style={{ position: "absolute", top: 310 }}>
         <RequestControlSearchBar
           fixedQuery="iphone 15"
-          badge="ACTIVE: REQ C"
-          badgeColor={RC_COLORS.green}
+          badge={isReq1Overwritten ? "⚠️ STATE CORRUPTED BY #1" : "USER QUERY: iphone 15"}
+          badgeColor={isReq1Overwritten ? RC_COLORS.red : RC_COLORS.green}
         />
       </div>
 
-      {/* 3. The Out-of-Order Response Stream */}
+      {/* 3. Step-by-Step Execution Timeline */}
       <div
         style={{
           position: "absolute",
-          top: 480,
-          width: 820,
+          top: 450,
+          width: 840,
           display: "flex",
           flexDirection: "column",
-          gap: 20,
+          gap: 16,
         }}
       >
-        {/* Item 1: Response C (Fastest - Arrived first) */}
+        {/* Step 1: Promise #2 completes first */}
         <div
           style={{
-            background: isCArrived ? `${RC_COLORS.cardBg}` : "#0a0e18",
+            background: RC_COLORS.cardBg,
             border: `2px solid ${RC_COLORS.green}`,
-            boxShadow: isCArrived
-              ? `0 0 40px ${RC_COLORS.greenGlow}`
-              : "0 10px 20px rgba(0,0,0,0.3)",
+            boxShadow: `0 8px 30px ${RC_COLORS.greenGlow}`,
             borderRadius: 20,
-            padding: "20px 28px",
+            padding: "18px 24px",
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            transform: `scale(${isCArrived ? 0.95 + cPulse * 0.05 : 1})`,
+            flexDirection: "column",
+            gap: 10,
+            transform: `scale(${isReq2Resolved ? 0.96 + req2Spring * 0.04 : 1})`,
+            opacity: isReq2Resolved ? 1 : 0.3,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: "50%",
-                background: `${RC_COLORS.green}33`,
-                border: `2px solid ${RC_COLORS.green}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: RC_COLORS.green,
-                fontWeight: 900,
-                fontSize: 18,
-              }}
-            >
-              C
-            </div>
-            <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div
                 style={{
-                  color: RC_COLORS.text,
-                  fontSize: 22,
-                  fontFamily: "monospace",
-                  fontWeight: 800,
-                }}
-              >
-                RESPONSE C: &quot;iphone 15&quot;
-              </div>
-              <div
-                style={{
+                  background: `${RC_COLORS.green}33`,
+                  border: `1.5px solid ${RC_COLORS.green}`,
                   color: RC_COLORS.green,
-                  fontSize: 15,
-                  fontWeight: 700,
-                  marginTop: 2,
+                  fontWeight: 900,
+                  fontSize: 14,
+                  padding: "4px 10px",
+                  borderRadius: 8,
                 }}
               >
-                1st to return (110ms) → UI Updated to iPhone 15 ✓
+                1ST EXECUTION • t=100ms
               </div>
+              <span style={{ color: RC_COLORS.text, fontSize: 20, fontWeight: 800 }}>
+                Promise #2 (&quot;iphone 15&quot;) Resolves
+              </span>
             </div>
+            <span style={{ color: RC_COLORS.green, fontWeight: 900, fontSize: 16 }}>✓ UI UPDATED</span>
           </div>
 
           <div
             style={{
-              background: `${RC_COLORS.green}33`,
+              background: "#080c14",
+              borderRadius: 10,
+              padding: "8px 14px",
+              fontFamily: "monospace",
+              fontSize: 16,
               color: RC_COLORS.green,
-              fontSize: 15,
-              fontWeight: 900,
-              padding: "6px 14px",
-              borderRadius: 8,
-              letterSpacing: 1,
             }}
           >
-            ✓ 1st RETURN
+            setResults([&quot;iPhone 15 Pro&quot;, &quot;iPhone 15 Plus&quot;]) ➔ Rendered correctly
           </div>
         </div>
 
-        {/* Item 2: Response A (Slowest - Returns late) */}
+        {/* Step 2: Promise #1 completes late and overwrites */}
         <div
           style={{
-            background: RC_COLORS.cardBg,
-            border: `2px solid ${isAFlying ? RC_COLORS.red : RC_COLORS.cyan}`,
-            boxShadow: isAFlying
-              ? `0 0 35px ${RC_COLORS.redGlow}`
-              : "0 10px 20px rgba(0,0,0,0.3)",
+            background: isReq1Overwritten ? "#1c0b14" : RC_COLORS.cardBg,
+            border: `2px solid ${isReq1Overwritten ? RC_COLORS.red : RC_COLORS.cardBorder}`,
+            boxShadow: isReq1Overwritten ? `0 0 40px ${RC_COLORS.redGlow}` : "none",
             borderRadius: 20,
-            padding: "20px 28px",
+            padding: "18px 24px",
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            flexDirection: "column",
+            gap: 10,
+            transform: `scale(${isReq1Overwritten ? 0.96 + req1Spring * 0.04 : 1})`,
+            opacity: isReq1Overwritten ? 1 : 0.4,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div
+                style={{
+                  background: isReq1Overwritten ? `${RC_COLORS.red}33` : `${RC_COLORS.panel}`,
+                  border: `1.5px solid ${isReq1Overwritten ? RC_COLORS.red : RC_COLORS.border}`,
+                  color: isReq1Overwritten ? RC_COLORS.red : RC_COLORS.muted,
+                  fontWeight: 900,
+                  fontSize: 14,
+                  padding: "4px 10px",
+                  borderRadius: 8,
+                }}
+              >
+                2ND EXECUTION • t=350ms
+              </div>
+              <span style={{ color: RC_COLORS.text, fontSize: 20, fontWeight: 800 }}>
+                Promise #1 (&quot;iphone&quot;) Resolves LATER
+              </span>
+            </div>
+            <span
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: "50%",
-                background: `${RC_COLORS.cyan}33`,
-                border: `2px solid ${RC_COLORS.cyan}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: RC_COLORS.cyan,
+                color: isReq1Overwritten ? RC_COLORS.red : RC_COLORS.muted,
                 fontWeight: 900,
-                fontSize: 18,
+                fontSize: 16,
               }}
             >
-              A
-            </div>
-            <div>
-              <div
-                style={{
-                  color: RC_COLORS.text,
-                  fontSize: 22,
-                  fontFamily: "monospace",
-                  fontWeight: 800,
-                }}
-              >
-                RESPONSE A: &quot;iphone&quot;
-              </div>
-              <div
-                style={{
-                  color: isAFlying ? RC_COLORS.red : RC_COLORS.muted,
-                  fontSize: 15,
-                  fontWeight: 700,
-                  marginTop: 2,
-                }}
-              >
-                {isAFlying
-                  ? "2nd to return (320ms) — RETURNING OUT OF ORDER!"
-                  : "Still calculating on server (320ms)..."}
-              </div>
-            </div>
+              {isReq1Overwritten ? "💥 BLIND OVERWRITE!" : "IN FLIGHT..."}
+            </span>
           </div>
 
           <div
             style={{
-              background: isAFlying
-                ? `${RC_COLORS.red}33`
-                : `${RC_COLORS.panel}`,
-              border: `1px solid ${
-                isAFlying ? RC_COLORS.red : RC_COLORS.border
-              }`,
-              color: isAFlying ? RC_COLORS.red : RC_COLORS.muted,
-              fontSize: 15,
-              fontWeight: 900,
-              padding: "6px 14px",
-              borderRadius: 8,
-              letterSpacing: 1,
+              background: "#080c14",
+              borderRadius: 10,
+              padding: "8px 14px",
+              fontFamily: "monospace",
+              fontSize: 16,
+              color: isReq1Overwritten ? RC_COLORS.red : RC_COLORS.muted,
             }}
           >
-            {isAFlying ? "⚠️ OUTDATED" : "IN FLIGHT"}
-          </div>
-        </div>
-
-        {/* Item 3: Response B (Medium latency) */}
-        <div
-          style={{
-            background: RC_COLORS.cardBg,
-            border: `1px solid ${RC_COLORS.cardBorder}`,
-            borderRadius: 20,
-            padding: "20px 28px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            opacity: 0.8,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: "50%",
-                background: `${RC_COLORS.violet}33`,
-                border: `2px solid ${RC_COLORS.violet}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: RC_COLORS.violet,
-                fontWeight: 900,
-                fontSize: 18,
-              }}
-            >
-              B
-            </div>
-            <div>
-              <div
-                style={{
-                  color: RC_COLORS.text,
-                  fontSize: 22,
-                  fontFamily: "monospace",
-                  fontWeight: 800,
-                }}
-              >
-                RESPONSE B: &quot;iphone 1&quot;
-              </div>
-              <div
-                style={{
-                  color: RC_COLORS.muted,
-                  fontSize: 15,
-                  fontWeight: 700,
-                  marginTop: 2,
-                }}
-              >
-                3rd to return (240ms) — Also stale
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              background: `${RC_COLORS.panel}`,
-              border: `1px solid ${RC_COLORS.border}`,
-              color: RC_COLORS.muted,
-              fontSize: 15,
-              fontWeight: 900,
-              padding: "6px 14px",
-              borderRadius: 8,
-              letterSpacing: 1,
-            }}
-          >
-            STALE
+            setResults([&quot;iPhone 13&quot;, &quot;iPhone Case&quot;]) ➔ Overwrote new state!
           </div>
         </div>
       </div>
 
-      {/* 4. Danger Callout Card (When old Response A arrives out-of-order) */}
-      {isAFlying && (
-        <div
-          style={{
-            position: "absolute",
-            top: 1040,
-            width: 820,
-            background: `${RC_COLORS.panelStrong}f5`,
-            border: `2px solid ${RC_COLORS.red}`,
-            boxShadow: `0 0 50px ${RC_COLORS.redGlow}`,
-            borderRadius: 24,
-            padding: "26px 32px",
-            boxSizing: "border-box",
-            display: "flex",
-            alignItems: "center",
-            gap: 18,
-          }}
-        >
-          <div style={{ fontSize: 44 }}>⚠️</div>
-          <div>
-            <div
-              style={{
-                color: RC_COLORS.red,
-                fontSize: 24,
-                fontWeight: 900,
-                letterSpacing: 1,
-              }}
-            >
-              RACE CONDITION DANGER
-            </div>
-            <div
-              style={{
-                color: RC_COLORS.text,
-                fontSize: 20,
-                fontWeight: 600,
-                marginTop: 4,
-              }}
-            >
-              Old Response A (&quot;iphone&quot;) could overwrite new UI state (&quot;iphone 15&quot;)!
-            </div>
-          </div>
+      {/* 4. The Core "WHY" Explanation Card */}
+      <div
+        style={{
+          position: "absolute",
+          top: 800,
+          width: 840,
+          background: "linear-gradient(135deg, rgba(22, 28, 42, 0.98) 0%, rgba(12, 16, 26, 0.98) 100%)",
+          border: `2px solid ${isReq1Overwritten ? RC_COLORS.red : RC_COLORS.amber}`,
+          boxShadow: isReq1Overwritten ? `0 15px 45px ${RC_COLORS.redGlow}` : "none",
+          borderRadius: 22,
+          padding: "22px 28px",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 26 }}>💡</span>
+          <span
+            style={{
+              color: isReq1Overwritten ? RC_COLORS.red : RC_COLORS.amber,
+              fontSize: 17,
+              fontWeight: 900,
+              letterSpacing: 1.5,
+              textTransform: "uppercase",
+            }}
+          >
+            WHY THIS HAPPENS IN JAVASCRIPT:
+          </span>
         </div>
-      )}
+
+        <div style={{ color: RC_COLORS.text, fontSize: 19, lineHeight: 1.45, fontWeight: 600 }}>
+          In standard frontend code, <strong style={{ color: RC_COLORS.cyan }}>setResults()</strong> has no memory of keystroke order. Whichever network request finishes <strong style={{ color: RC_COLORS.red }}>last in time</strong> becomes the final state on screen!
+        </div>
+      </div>
     </div>
   );
 };
