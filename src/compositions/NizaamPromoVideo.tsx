@@ -10,12 +10,17 @@ import { Scene3B_Inventory } from "../scenes/Scene3B_Inventory";
 import { Scene3C_UdhaarKhata } from "../scenes/Scene3C_UdhaarKhata";
 import { Scene3D_RepairLab } from "../scenes/Scene3D_RepairLab";
 import { Scene3E_ProfitReports } from "../scenes/Scene3E_ProfitReports";
+import { Scene3F_SuppliersPurchases } from "../scenes/Scene3F_SuppliersPurchases";
+import { Scene3G_ReceiptsReturns } from "../scenes/Scene3G_ReceiptsReturns";
 import { Scene4_Ecosystem } from "../scenes/Scene4_Ecosystem";
 import { Scene5_Outro } from "../scenes/Scene5_Outro";
+import { NizaamPromoAudio } from "../audio/NizaamPromoAudio";
 
 export const NizaamPromoVideo: React.FC = () => {
   return (
     <AbsoluteFill style={{ backgroundColor: "#070E0B" }}>
+      {/* Dynamic Background Music & Visual SFX Layer */}
+      <NizaamPromoAudio />
       {/* 1. Problem / Hook (0s - 7s | 210 frames) */}
       <Sequence
         from={TIMELINE.SCENE_1_PROBLEM.from}
@@ -79,7 +84,25 @@ export const NizaamPromoVideo: React.FC = () => {
         <Scene3E_ProfitReports />
       </Sequence>
 
-      {/* 4. Mobile + Desktop Ecosystem (43s - 51s | 240 frames) */}
+      {/* 3F. Product Showcase: Suppliers & Purchase Orders (43s - 49s | 180 frames) */}
+      <Sequence
+        from={TIMELINE.SCENE_3F_SUPPLIERS.from}
+        durationInFrames={TIMELINE.SCENE_3F_SUPPLIERS.duration}
+        name="3F_SuppliersPurchases"
+      >
+        <Scene3F_SuppliersPurchases />
+      </Sequence>
+
+      {/* 3G. Product Showcase: Thermal Receipts & Returns (49s - 55s | 180 frames) */}
+      <Sequence
+        from={TIMELINE.SCENE_3G_RECEIPTS.from}
+        durationInFrames={TIMELINE.SCENE_3G_RECEIPTS.duration}
+        name="3G_ReceiptsReturns"
+      >
+        <Scene3G_ReceiptsReturns />
+      </Sequence>
+
+      {/* 4. Mobile + Desktop Ecosystem (55s - 63s | 240 frames) */}
       <Sequence
         from={TIMELINE.SCENE_4_ECOSYSTEM.from}
         durationInFrames={TIMELINE.SCENE_4_ECOSYSTEM.duration}
@@ -88,7 +111,7 @@ export const NizaamPromoVideo: React.FC = () => {
         <Scene4_Ecosystem />
       </Sequence>
 
-      {/* 5. Final Brand / Outro (51s - 58s | 210 frames) */}
+      {/* 5. Final Brand / Outro (63s - 70s | 210 frames) */}
       <Sequence
         from={TIMELINE.SCENE_5_OUTRO.from}
         durationInFrames={TIMELINE.SCENE_5_OUTRO.duration}

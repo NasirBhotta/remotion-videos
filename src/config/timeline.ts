@@ -33,14 +33,22 @@ export const TIMELINE = {
     from: 1110,
     duration: 180, // 6.0s
   },
-  SCENE_4_ECOSYSTEM: {
+  SCENE_3F_SUPPLIERS: {
     from: 1290,
+    duration: 180, // 6.0s
+  },
+  SCENE_3G_RECEIPTS: {
+    from: 1470,
+    duration: 180, // 6.0s
+  },
+  SCENE_4_ECOSYSTEM: {
+    from: 1650,
     duration: 240, // 8.0s
   },
   SCENE_5_OUTRO: {
-    from: 1530,
+    from: 1890,
     duration: 210, // 7.0s
   },
 } as const;
 
-export const TOTAL_DURATION_IN_FRAMES = 1740; // 58.0s
+export const TOTAL_DURATION_IN_FRAMES = 2100; // 70.0s

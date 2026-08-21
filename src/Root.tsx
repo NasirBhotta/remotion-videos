@@ -8,6 +8,8 @@ import { Scene3B_Inventory } from "./scenes/Scene3B_Inventory";
 import { Scene3C_UdhaarKhata } from "./scenes/Scene3C_UdhaarKhata";
 import { Scene3D_RepairLab } from "./scenes/Scene3D_RepairLab";
 import { Scene3E_ProfitReports } from "./scenes/Scene3E_ProfitReports";
+import { Scene3F_SuppliersPurchases } from "./scenes/Scene3F_SuppliersPurchases";
+import { Scene3G_ReceiptsReturns } from "./scenes/Scene3G_ReceiptsReturns";
 import { Scene4_Ecosystem } from "./scenes/Scene4_Ecosystem";
 import { Scene5_Outro } from "./scenes/Scene5_Outro";
 import { TIMELINE, TOTAL_DURATION_IN_FRAMES, VIDEO_FPS, VIDEO_HEIGHT, VIDEO_WIDTH } from "./config/timeline";
@@ -17,7 +19,7 @@ import { TIMELINE, TOTAL_DURATION_IN_FRAMES, VIDEO_FPS, VIDEO_HEIGHT, VIDEO_WIDT
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      {/* Primary Master Video (58s Vertical Promo) */}
+      {/* Primary Master Video (70s Vertical Promo) */}
       <Composition
         id="NizaamPromoVideo"
         component={NizaamPromoVideo}
@@ -86,6 +88,24 @@ export const RemotionRoot: React.FC = () => {
         id="Scene3E-ProfitReports"
         component={Scene3E_ProfitReports}
         durationInFrames={TIMELINE.SCENE_3E_PROFIT.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+
+      <Composition
+        id="Scene3F-SuppliersPurchases"
+        component={Scene3F_SuppliersPurchases}
+        durationInFrames={TIMELINE.SCENE_3F_SUPPLIERS.duration}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+
+      <Composition
+        id="Scene3G-ReceiptsReturns"
+        component={Scene3G_ReceiptsReturns}
+        durationInFrames={TIMELINE.SCENE_3G_RECEIPTS.duration}
         fps={VIDEO_FPS}
         width={VIDEO_WIDTH}
         height={VIDEO_HEIGHT}

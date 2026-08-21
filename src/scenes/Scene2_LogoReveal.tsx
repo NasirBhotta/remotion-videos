@@ -11,49 +11,60 @@ export const Scene2_LogoReveal: React.FC = () => {
   const logoSpring = spring({
     frame,
     fps,
-    config: { damping: 11, stiffness: 80 },
+    config: { damping: 11, stiffness: 85 },
   });
 
-  const logoScale = interpolate(logoSpring, [0, 1], [0.35, 1]);
-  const logoRotateY = interpolate(logoSpring, [0, 1], [-25, 0]);
-  const logoRotateX = interpolate(logoSpring, [0, 1], [20, 0]);
+  const logoScale = interpolate(logoSpring, [0, 1], [0.3, 1.05]);
+  const logoRotateY = interpolate(logoSpring, [0, 1], [-30, 0]);
+  const logoRotateX = interpolate(logoSpring, [0, 1], [25, 0]);
   const logoOpacity = interpolate(logoSpring, [0, 1], [0, 1]);
+
+  // Continuous subtle 3D float
+  const logoFloatY = Math.sin(frame / 20) * 8;
+  const ringRotate = (frame * 1.5) % 360;
+  const ringRotateReverse = 360 - ((frame * 1.2) % 360);
 
   // Brand Name typography entrance
   const textSpring = spring({
-    frame: Math.max(0, frame - 18),
+    frame: Math.max(0, frame - 16),
     fps,
-    config: { damping: 13, stiffness: 100 },
+    config: { damping: 12, stiffness: 100 },
   });
 
-  const textY = interpolate(textSpring, [0, 1], [40, 0]);
+  const textY = interpolate(textSpring, [0, 1], [45, 0]);
   const textOpacity = interpolate(textSpring, [0, 1], [0, 1]);
 
   // Subtitle entrance
   const subSpring = spring({
-    frame: Math.max(0, frame - 32),
+    frame: Math.max(0, frame - 30),
     fps,
-    config: { damping: 14, stiffness: 90 },
+    config: { damping: 13, stiffness: 95 },
   });
 
-  const subY = interpolate(subSpring, [0, 1], [30, 0]);
+  const subY = interpolate(subSpring, [0, 1], [35, 0]);
   const subOpacity = interpolate(subSpring, [0, 1], [0, 1]);
 
   // Pillar chips entrance
   const chipsSpring = spring({
-    frame: Math.max(0, frame - 46),
+    frame: Math.max(0, frame - 44),
     fps,
-    config: { damping: 14, stiffness: 90 },
+    config: { damping: 13, stiffness: 95 },
   });
 
-  const chipsY = interpolate(chipsSpring, [0, 1], [20, 0]);
+  const chipsY = interpolate(chipsSpring, [0, 1], [25, 0]);
   const chipsOpacity = interpolate(chipsSpring, [0, 1], [0, 1]);
 
-  // Radial light sweep animation
-  const flareScale = interpolate(frame, [0, 90], [0.6, 1.4], {
+  // Radial light sweep & shockwave flare
+  const flareScale = interpolate(frame, [0, 80], [0.6, 1.5], {
     extrapolateRight: "clamp",
   });
-  const flareOpacity = interpolate(frame, [0, 30, 120, 180], [0, 0.9, 0.8, 0.5]);
+  const flareOpacity = interpolate(frame, [0, 25, 120, 180], [0, 0.95, 0.85, 0.55]);
+
+  // Energy shockwave ring expansion
+  const shockwave = interpolate(frame, [0, 45], [0.4, 1.6], {
+    extrapolateRight: "clamp",
+  });
+  const shockwaveOpacity = interpolate(frame, [0, 15, 45], [0, 0.8, 0]);
 
   // Exit transition
   const exitProgress = interpolate(frame, [155, 180], [0, 1], {
@@ -65,7 +76,7 @@ export const Scene2_LogoReveal: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ overflow: "hidden" }}>
-      <Background accentColor={BRAND.colors.primaryLight} glowIntensity={1.4} />
+      <Background accentColor={BRAND.colors.primaryLight} glowIntensity={1.45} />
 
       <div
         style={{
@@ -83,37 +94,85 @@ export const Scene2_LogoReveal: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            width: 750,
-            height: 750,
+            width: 800,
+            height: 800,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(227, 163, 53, 0.35) 0%, rgba(14, 111, 78, 0.4) 40%, transparent 70%)",
-            filter: "blur(50px)",
+            background: "radial-gradient(circle, rgba(227, 163, 53, 0.4) 0%, rgba(14, 111, 78, 0.45) 42%, transparent 70%)",
+            filter: "blur(60px)",
             transform: `scale(${flareScale})`,
             opacity: flareOpacity,
             pointerEvents: "none",
           }}
         />
 
-        {/* 3D NIZAAM Logo Emblem */}
+        {/* Shockwave energy pulse ring */}
+        <div
+          style={{
+            position: "absolute",
+            width: 500,
+            height: 500,
+            borderRadius: "50%",
+            border: "3px solid rgba(245, 200, 116, 0.8)",
+            boxShadow: "0 0 40px rgba(79, 174, 135, 0.8)",
+            transform: `scale(${shockwave})`,
+            opacity: shockwaveOpacity,
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* 3D NIZAAM Logo Emblem with Rotating Aura Rings */}
         <div
           style={{
             position: "relative",
-            width: 360,
-            height: 360,
-            perspective: 1100,
-            marginBottom: 36,
+            width: 380,
+            height: 380,
+            perspective: 1200,
+            marginBottom: 32,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
+          {/* Outer Golden Dotted Aura Ring */}
+          <div
+            style={{
+              position: "absolute",
+              width: 370,
+              height: 370,
+              borderRadius: "50%",
+              border: "2px dashed rgba(227, 163, 53, 0.45)",
+              transform: `rotate(${ringRotate}deg) scale(${logoScale})`,
+              opacity: logoOpacity * 0.8,
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Inner Emerald Energy Ring */}
+          <div
+            style={{
+              position: "absolute",
+              width: 330,
+              height: 330,
+              borderRadius: "50%",
+              border: "1.5px solid rgba(79, 174, 135, 0.5)",
+              boxShadow: "0 0 30px rgba(79, 174, 135, 0.3)",
+              transform: `rotate(${ringRotateReverse}deg) scale(${logoScale})`,
+              opacity: logoOpacity * 0.85,
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* 3D Logo Core */}
           <div
             style={{
               width: "100%",
               height: "100%",
-              transform: `scale(${logoScale}) rotateX(${logoRotateX}deg) rotateY(${logoRotateY}deg)`,
+              transform: `translateY(${logoFloatY}px) scale(${logoScale}) rotateX(${logoRotateX}deg) rotateY(${logoRotateY}deg)`,
               opacity: logoOpacity,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              filter: "drop-shadow(0 30px 60px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 50px rgba(79, 174, 135, 0.5))",
+              filter: "drop-shadow(0 30px 60px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 55px rgba(79, 174, 135, 0.6))",
             }}
           >
             <Img
@@ -127,7 +186,7 @@ export const Scene2_LogoReveal: React.FC = () => {
           </div>
         </div>
 
-        {/* Brand Name */}
+        {/* Brand Name Title */}
         <div
           style={{
             textAlign: "center",
@@ -141,10 +200,11 @@ export const Scene2_LogoReveal: React.FC = () => {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              padding: "6px 18px",
+              padding: "7px 20px",
               borderRadius: 20,
-              background: "rgba(14, 111, 78, 0.25)",
-              border: "1px solid rgba(79, 174, 135, 0.4)",
+              background: "rgba(14, 111, 78, 0.3)",
+              border: "1.5px solid rgba(79, 174, 135, 0.55)",
+              boxShadow: "0 0 20px rgba(79, 174, 135, 0.35)",
               fontSize: 16,
               fontWeight: 800,
               letterSpacing: "3px",
@@ -158,13 +218,13 @@ export const Scene2_LogoReveal: React.FC = () => {
           <h1
             className="font-heading"
             style={{
-              fontSize: 92,
+              fontSize: 96,
               fontWeight: 900,
-              letterSpacing: "4px",
+              letterSpacing: "5px",
               margin: 0,
               color: "#FFFFFF",
               textShadow: "0 10px 40px rgba(0,0,0,0.9)",
-              background: "linear-gradient(135deg, #FFFFFF 0%, #F5C874 50%, #E3A335 100%)",
+              background: "linear-gradient(135deg, #FFFFFF 0%, #F5C874 45%, #E3A335 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -177,7 +237,7 @@ export const Scene2_LogoReveal: React.FC = () => {
         <div
           style={{
             textAlign: "center",
-            maxWidth: 860,
+            maxWidth: 880,
             padding: "0 40px",
             transform: `translateY(${subY}px)`,
             opacity: subOpacity,
@@ -186,8 +246,8 @@ export const Scene2_LogoReveal: React.FC = () => {
         >
           <p
             style={{
-              fontSize: 28,
-              fontWeight: 600,
+              fontSize: 30,
+              fontWeight: 700,
               lineHeight: 1.35,
               color: BRAND.colors.textLight,
               margin: 0,
@@ -197,7 +257,7 @@ export const Scene2_LogoReveal: React.FC = () => {
           </p>
           <p
             style={{
-              fontSize: 20,
+              fontSize: 21,
               fontWeight: 500,
               color: BRAND.colors.textMuted,
               marginTop: 8,
@@ -212,7 +272,7 @@ export const Scene2_LogoReveal: React.FC = () => {
         <div
           style={{
             display: "flex",
-            gap: 12,
+            gap: 14,
             transform: `translateY(${chipsY}px)`,
             opacity: chipsOpacity,
           }}
@@ -229,14 +289,15 @@ export const Scene2_LogoReveal: React.FC = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                padding: "10px 20px",
+                padding: "11px 22px",
                 borderRadius: 24,
-                background: "rgba(14, 111, 78, 0.25)",
-                border: "1px solid rgba(79, 174, 135, 0.4)",
+                background: "rgba(14, 111, 78, 0.3)",
+                border: "1.5px solid rgba(79, 174, 135, 0.5)",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.5), 0 0 20px rgba(79, 174, 135, 0.25)",
                 fontSize: 18,
                 fontWeight: 700,
                 color: BRAND.colors.textLight,
-                backdropFilter: "blur(10px)",
+                backdropFilter: "blur(12px)",
               }}
             >
               <span>{chip.icon}</span>
